@@ -18,4 +18,8 @@ class Match < ActiveRecord::Base
   def bots
     [bot_one, bot_two].compact
   end
+
+  def bot_names
+    bots.map{|b| "#{b.player_name} (#{b.bot_name})" }.join(", ")
+  end
 end

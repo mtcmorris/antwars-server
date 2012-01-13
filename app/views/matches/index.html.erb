@@ -1,21 +1,39 @@
-<h1>Listing matches</h1>
+<div class="hero-unit">
+  <h1>Planet of the ants</h1>
+  <p>Write an AI to battle it out in ruby and upload it.
+    <% if @current_match %>
+      Currently <%= @current_match.bot_names %> are duking it out.</p>
+    <% end %>
+  </p>
+  <p><a class="btn secondary large" href="/bots/new">Get started &raquo;</a></p>
+</div>
 
-<table>
-  <tr>
-    <th>Players</th>
-    <th>Status</th>
-    <th>Winner</th>
-    <th>Replay</th>
-  </tr>
+<div class="row">
+  <div class="span-two-thirds">
+    <h1>Last 10 matches</h1>
 
-<% @matches.each do |match| %>
-  <tr>
-    <td><%= match.bots.map{|b| "#{b.player_name} (#{b.bot_name})" }.join(", ") %></td>
-    <td><%= match.status %></td>
-    <td><%= match.winner_id || "-" %></td>
-    <td><%= link_to 'Show', match %></td>
-  </tr>
-<% end %>
-</table>
+    <table class="zebra-striped">
+      <tr>
+        <th>Players</th>
+        <th>Winner</th>
+        <th>Replay</th>
+      </tr>
 
-<%= link_to "Upload a bot", new_bot_path %>
+    <% @matches.each do |match| %>
+      <tr>
+        <td><%= match.bot_names %></td>
+        <td><em>Coming soon</em></td>
+        <td><%= link_to 'Show', match %></td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+
+  <div class="span-one-third">
+    <h1>Leaderboard</h1>
+    <p class="label">Coming soon</p>
+    <%= link_to "Get in the game", new_bot_path, class: "btn primary" %>
+  </div>
+</div>
+
+

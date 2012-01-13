@@ -3,7 +3,7 @@ class Battle
 
   def self.fight!(bots)
 
-    play_game_command = 'cd ' + Rails.root.to_s + '/aitools;./playgame.py --player_seed 42 --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 1000 --map_file maps/maze/maze_02p_02.map "$@" '
+    play_game_command = 'cd ' + Rails.root.to_s + '/aitools; ./playgame.py --player_seed 42 --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 1000 --secure_jail --map_file maps/maze/maze_02p_02.map "$@" '
 
 
     bot_paths = []
@@ -11,9 +11,6 @@ class Battle
     bots.each do |bot|
       bot_paths << (clean_and_setup_temp_path slugorize(bot.player_name), bot.source.to_file.path)
     end
-
-    # bot1_dir = File.dirname(bot1_path)
-    #     bot1_command = "ruby #{bot1_path}"
 
     bot_paths.map!{|p| '"ruby '+ p + '"'}
 

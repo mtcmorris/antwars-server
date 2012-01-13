@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Antwars</title>
+  <title>Planet of the ants</title>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+<div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="/">Planet of the ants</a>
+          <ul class="nav">
+            <li><%= link_to "Submit Bot", new_bot_path %></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-<%= yield %>
+    <div class="container" style="padding-top: 40px;">
+
+      <%= yield %>
+
+      <footer>
+        <p>By <%= link_to "@mtcmorris", "http://twitter.com/mtcmorris" %></p>
+      </footer>
+
+    </div> <!-- /container -->
+
+
+
 
 </body>
 </html>
