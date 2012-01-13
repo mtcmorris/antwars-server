@@ -1,0 +1,21 @@
+<h1>Listing matches</h1>
+
+<table>
+  <tr>
+    <th>Players</th>
+    <th>Status</th>
+    <th>Winner</th>
+    <th>Replay</th>
+  </tr>
+
+<% @matches.each do |match| %>
+  <tr>
+    <td><%= match.bots.map{|b| "#{b.player_name} (#{b.bot_name})" }.join(", ") %></td>
+    <td><%= match.status %></td>
+    <td><%= match.winner_id || "-" %></td>
+    <td><%= link_to 'Show', match %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to "Upload a bot", new_bot_path %>

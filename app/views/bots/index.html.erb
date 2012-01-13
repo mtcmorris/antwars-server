@@ -1,0 +1,25 @@
+<h1>Listing bots</h1>
+
+<table>
+  <tr>
+    <th>Player name</th>
+    <th>Bot name</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @bots.each do |bot| %>
+  <tr>
+    <td><%= bot.player_name %></td>
+    <td><%= bot.bot_name %></td>
+    <td><%= link_to 'Show', bot %></td>
+    <td><%= link_to 'Edit', edit_bot_path(bot) %></td>
+    <td><%= link_to 'Destroy', bot, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Bot', new_bot_path %>

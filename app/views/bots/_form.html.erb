@@ -1,0 +1,41 @@
+<%= form_for(@bot) do |f| %>
+  <% if @bot.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bot.errors.count, "error") %> prohibited this bot from being saved:</h2>
+
+      <ul>
+      <% @bot.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :player_name, "Twitter handle" %><br />
+    <%= f.text_field :player_name %>
+  </div>
+  <div class="field">
+    <%= f.label :bot_name %><br />
+    <%= f.text_field :bot_name %>
+  </div>
+  <div class="field">
+    <%= f.label :source, "Source code zip file"%><br />
+    <%= f.file_field :source %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+<div>
+  <h2>Writing a bot</h2>
+  <ul>
+    <li><%= link_to "Read the problem description", "/static/problem-description" %></li>
+    <li><%= link_to "Read the game specification", "/static/specification" %></li>
+    <li><%= link_to "Read the tutorial", "/static/ants_tutorial"%></li>
+    <li><%= link_to "Download the ruby starter pack", "/ruby-starter.zip" %></li>
+    <li><%= link_to "Download the server pack", "/ruby-starter.zip" %></li>
+    <li>More information is available <%= link_to "here", "http://aichallenge.org/" %>.</li>
+  </ul>
+  <p></p>
+</div>

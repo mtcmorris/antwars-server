@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Ant Canvas</title>
+	<script type="text/javascript" src="/visualizer/js/visualizer.js"></script>
+	<script type="text/javascript">
+		function init() {
+            var options = new Options();
+            options.data_dir = '/visualizer/data/';
+            options.embedded = true;
+			var visualizer = new Visualizer(document.getElementById("game"), options);
+			visualizer.loadReplayData('<%= @match.replay.html_safe %>');
+		}
+	</script>
+	<style type="text/css">
+		html { margin:0; padding:0; }
+		body { margin:0; padding:0; overflow-x:hidden; overflow-y: auto;}
+
+	</style>
+</head>
+<body onload="init()">
+  <p>Back to <%= link_to "root", root_url %></p>
+  <div id="game" style="width: 600px; height: 500px;">
+  </div>
+</body>
+</html>

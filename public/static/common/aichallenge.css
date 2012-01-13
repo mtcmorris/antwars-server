@@ -1,0 +1,779 @@
+
+/* begin font.css ============================================================== */
+@charset "utf-8";
+@import url("http://fonts.googleapis.com/css?family=Ubuntu");
+/* end font.css ================================================================ */
+
+/* begin reset.css ============================================================= */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/* end reset.css =============================================================== */
+
+/* begin layout.css ============================================================ */
+html {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+body {
+    background: #603814;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#603814', endColorstr='#300400', GradientType=0); /* for IE */
+    background: -webkit-gradient(linear, left top, 0% 100%, from(#603814), to(#300400));
+    background: -moz-linear-gradient(top,  #603814,  #300400);
+    background: -o-linear-gradient(#603814,#300400);
+    background-attachment: fixed;
+}
+
+#wrapper {
+    position: relative;
+
+    margin: 10px auto;
+    width: 960px;
+
+    background: #fff;
+
+    -moz-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+}
+
+.left {
+    display: block;
+    float: left;
+    width: 740px;
+}
+
+.right {
+    position: relative;
+    display: block;
+    float: right;
+    width: 220px;
+}
+
+.columns {
+    position: relative;
+    background: #7a0;
+}
+
+.columns:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+#header .left {
+    position: relative;
+    height: 110px;
+}
+
+#header .right {
+    height: 110px;
+    overflow: hidden;
+    background-image: url('images/ants.png');
+    background-repeat: no-repeat;
+    background-position: center 52px;
+}
+
+#header .left, #footer {
+    background: #050;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#009900', endColorstr='#005500', GradientType=1);
+    background: -webkit-gradient(linear, 0% 0%, 45% 0%, from(#090), to(#050));
+    background: -moz-linear-gradient(left, #090, #050 45%);
+    background: -o-linear-gradient(left,#090,#050 45%);
+}
+
+#header h1, #header h2, #header h3 {
+    font-weight: normal;
+    font-size: 60px;
+    padding-top: 15px;
+    text-shadow: none;
+    margin: 0px;
+}
+
+#header h1 {
+    position: relative;
+    right: 0px;
+    z-index: 1;
+    text-align: right;
+    text-shadow: 0px 0px 20px #7a0; /*Glow*/
+}
+
+#header .left h1, #header .left h3 {
+    text-align: right;
+    padding-right: 20px;
+}
+
+#header h2 {
+    text-align: center;
+    text-shadow: 0px 0px 10px #cfa;
+}
+
+#header h3 {
+    font-size: 1.5em;
+    color: #fff;
+    text-shadow: #000 1px 1px 3px;
+    text-align: right;
+    padding: 5px 20px 0px 20px;
+}
+
+#header .right img {
+    position: absolute;
+    float: right;
+    right: 0px;
+    top: 40px;
+}
+
+/* IE matrix transform and CSS transform have different behaviour, this hack should do */
+#header #triangle {
+    width: 3em;
+    height: 3em;
+    background: #050;
+    position: absolute;
+    float: left;
+    top: 20px;
+    left: -2.8em;
+    filter: progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand', M11=0.707106781, M12=-0.707106781, M21=0.707106781, M22=0.707106781);
+    -webkit-transform: translate(1.24264068711em, 15px) rotate(45deg);
+    -moz-transform: translate(1.24264068711em, 15px) rotate(45deg);
+    -o-transform: translate(1.24264068711em, 15px) rotate(45deg);
+}
+
+#content {
+    background: #fff;
+    padding: 15px;
+
+    min-height: 770px;
+}
+
+#visualizerDiv {
+    margin-bottom: 2.5em;
+}
+
+#visualizerDiv * {
+    display: block;
+    margin: 0 auto;
+}
+
+#menu {
+    padding: 10px;
+    background-image: url('images/ants.png');
+    background-repeat: no-repeat;
+    background-position: center -58px;
+}
+
+#menu h1 {
+    font-size: 1.4em;
+    text-shadow: none;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#menu form, #menu ul {
+    margin: 5px 5px 5px 10px;
+}
+
+#menu a {
+    color: #fff;
+}
+
+#menu .highlight {
+    list-style-type: circle;
+}
+
+#sponsor_bar {
+    text-align: center;
+    font-size: 0.9em;
+    padding: 5px 5px 5px 10px;
+}
+
+#sponsor_bar p {
+    text-align: center;
+}
+
+#footer {
+    padding: 15px;
+    color: #fff;
+    text-shadow: #000 1px 1px 3px;
+}
+
+#footer a {
+	color: #fff;
+}
+
+.toc {
+    float: right;
+    border: dotted 1px #eee;
+    padding: 1em;
+    margin: 1em;
+    margin-top: 0px;
+}
+
+.profile {
+	float: left;
+	width: 49%;
+}
+
+.rank {
+	float: right;
+    width: 49%;
+}
+
+/* end layout.css ============================================================== */
+
+/* begin pygments_style.css ==================================================== */
+.codehilite .hll { background-color: #ffffcc }
+.codehilite pre { background: #f0f0f0; }
+.codehilite .c { color: #60a0b0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #FF0000 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666666 } /* Operator */
+.codehilite .cm { color: #60a0b0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .c1 { color: #60a0b0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60a0b0; background-color: #fff0f0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .gr { color: #FF0000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #808080 } /* Generic.Output */
+.codehilite .gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #0040D0 } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40a070 } /* Literal.Number */
+.codehilite .s { color: #4070a0 } /* Literal.String */
+.codehilite .na { color: #4070a0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0e84b5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60add5 } /* Name.Constant */
+.codehilite .nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #d55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287e } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #bb60d5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+.codehilite .mf { color: #40a070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40a070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40a070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40a070 } /* Literal.Number.Oct */
+.codehilite .sb { color: #4070a0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070a0 } /* Literal.String.Char */
+.codehilite .sd { color: #4070a0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070a0 } /* Literal.String.Double */
+.codehilite .se { color: #4070a0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070a0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70a0d0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #c65d09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070a0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .vc { color: #bb60d5 } /* Name.Variable.Class */
+.codehilite .vg { color: #bb60d5 } /* Name.Variable.Global */
+.codehilite .vi { color: #bb60d5 } /* Name.Variable.Instance */
+.codehilite .il { color: #40a070 } /* Literal.Number.Integer.Long */
+
+/* end pygments_style.css ====================================================== */
+
+/* begin tab_sync.css ========================================================== */
+.tab_sync {
+    margin-bottom: 2em;
+}
+
+.tab_content {
+    margin: 0px;
+    padding: 5px;
+    margin: 0px -5px;
+    border: solid 1px #888;
+    background-color: #fafafa;
+}
+
+.tab_button {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    width: 100px;
+    height: 20px;
+    padding: 5px;
+    margin-bottom: -1px;
+    border: solid 1px #888;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    text-align: center;
+    background-color: #eee;
+    font-size: 1.25em;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #fff;
+    color: #888;
+}
+
+.tab_selected {
+    background-color: #fafafa;
+    border-bottom: 1px solid #fafafa;
+    text-shadow: #bbb 2px 2px 4px;
+    color: #333;
+}
+/* end tab_sync.css ============================================================ */
+
+/* begin typo.css ============================================================== */
+body {
+    font-family: 'Ubuntu', arial, serif;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4 {
+    display: block;
+    text-shadow: #aaa 1px 1px 3px;
+    line-height: 1;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2.5em;
+}
+
+h3 {
+    font-size: 2em;
+}
+
+h4 {
+    font-size: 1.5em;
+    font-weight: normal;
+}
+
+p {
+    text-align: justify;
+}
+
+ul, ol {
+    list-style-position:inside;
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+ul ul, ol ol {
+    margin-bottom: 0em;
+}
+ul li.spacer {
+    display: none;
+}
+ul li.spacer+li {
+    margin-top: 1em;
+}
+ul li {
+    list-style-type: disc;
+}
+ol li {
+    list-style-type: decimal-leading-zero;
+}
+
+hr {
+    clear: both;
+}
+
+/*Spacing*/
+h1, h2, h3, h4, p {
+    margin-bottom: 0.5em;
+}
+
+p+h1, p+h2, p+h3, p+h4 {
+    margin-top: 1.5em;
+}
+
+ul+h1, ul+h2, ul+h3, ul+h4 {
+    margin-top: 1.5em;
+}
+
+ol+h1, ol+h2, ol+h3, ol+h4 {
+    margin-top: 1.5em;
+}
+
+table+h1, table+h2, table+h3, table+h4 {
+    margin-top: 1.5em;
+}
+
+/*Clearing*/
+h2:before, h3:before {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+/*Links*/
+a {
+    color: #8B4513;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Monospaced elements */
+pre, code {
+    font-family: monospace;
+}
+pre {
+    padding: 10px;
+    display: block;
+    margin-bottom: 1em;
+    border: 1px solid #7a0;
+    background: #F7FFE5;
+    overflow: auto;
+}
+code {
+    background-color: #F7FFE5;
+    border: 1px solid #D6E6B3;
+    padding: 0px 3px;
+}
+pre code {
+    background-color: transparent;
+    border: none;
+}
+
+/*Tables*/
+th {
+    color: #050;
+    padding-left: 2px;
+    padding-right: 5px;
+}
+
+th.headerSortUp {
+    background-color: #050;
+    color: #fff;
+    padding: 0px 2px;
+}
+
+th.headerSortUp:after {
+    content: "\00a0\21d1";
+}
+
+th.headerSortDown {
+    background-color: #050;
+    color: #fff;
+    padding: 0px 2px;
+}
+
+th.headerSortDown:after {
+    content: "\00a0\21d3";
+}
+
+table.submissions {
+	width: 100%;
+}
+
+/* Games */
+
+table.games {
+    width: 700px;
+}
+
+table.games caption {
+    margin: 4px;
+}
+
+table.games a {
+    color: #A0522D;
+}
+
+table.games td {
+    padding: 1px 5px;
+    overflow: hidden;
+}
+
+table.games td.list {
+    width: 270px;
+    text-align: left;
+}
+
+table.games td.time {
+	width: 90px;
+}
+
+table.games td.map {
+	width: 90px;
+}
+
+table.games td.game {
+	width: 120px;
+}
+
+table.games td.list span {
+    width: 140px;
+    margin: 0px 2px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+table.games td.list span em {
+	font-style: italic;
+	color: #aaa;
+}
+
+table.games tr:hover {
+    background-color: #eee;
+}
+
+/* Ranking */
+
+table.ranking {
+    width: 700px;
+    text-align: center;
+}
+
+table.ranking caption {
+    margin: 4px;
+}
+
+table.ranking a {
+    color: #A0522D;
+}
+
+table.ranking td {
+    padding: 1px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+table.ranking td.username {
+    max-width: 50px;
+}
+
+table.ranking td.org {
+    max-width: 150px;
+}
+
+table.ranking tr:hover {
+    background-color: #eee;
+}
+
+tr.old {
+    filter: alpha(opacity=30);
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+    -moz-opacity: 0.30;
+    opacity:0.3;
+}
+
+tr.odd {
+    border: solid 1px #f8f8f8;
+}
+tr.even {
+    background-color: #f8fff0;
+}
+td.number {
+    font-family: Consolas, Inconsolata, monospace;
+    text-align: right;
+}
+
+table.login caption {
+    text-align: left;
+    margin: 10px;
+}
+
+table.login {
+	margin: 0px 40px;
+}
+
+table.login th {
+    padding: 0px 5px;
+    font-size: 1.25em;
+}
+
+table.login td {
+	padding: 0px 5px;
+	vertical-align: top;
+}
+
+/* Misc */
+.small {
+    font-size: 70%;
+}
+
+.large {
+    font-size: 130%;
+}
+
+.fade {
+    filter: alpha(opacity=30);
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+    -moz-opacity: 0.30;
+    opacity:0.3;
+}
+
+strong {
+    font-weight: bold;
+    text-shadow: #aaa 1px 1px 2px;
+}
+
+.bigstats th{
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+}
+.bigstats td{
+    padding:  10px;
+    padding-bottom: 0px;
+    font-size: 40px;
+    text-align: center;
+}
+
+.stats {
+	color: #050;
+	font-size: 20px;
+	padding: 10px;
+	padding-bottom: 0px;
+}
+
+.serverstats {
+    margin-left: 0px;
+}
+
+.serverstats ol {
+    margin-left: 0px;
+    display: inline-block;
+}
+
+.serverstats > li {
+    display: inline;
+}
+
+.serverstats li {
+    list-style-type: none;
+    text-align: center;
+    width: 76px;
+}
+
+.serverstats .worker_games {
+    font-size: 30px;
+}
+
+.serverstats .worker_name {
+    color: #050;
+}
+
+.serverstats .worker_perr {
+    color: #ccc;
+}
+
+.serverstats .worker_epm {
+    color: #c00;
+}
+
+div.pagination span {
+    margin: 0px 2px;
+    padding: 2px 4px;
+    border: solid 1px #f8f8f8;
+}
+
+pre.error {
+    border: dashed 1px DarkRed;
+    font-family: Consolas, Inconsolata, monospace;
+    text-align: left;
+    padding: 5px;
+    width: 680px;
+    overflow: auto;
+    background-color: #e0e0e0;
+}
+
+.countdown {
+	position: absolute;
+	top: 0;
+	left: 0;
+    text-align: center;
+    margin: 5px;
+}
+
+.countdown_row {
+	float: left;
+}
+
+.countdown_section {
+	display: inline-block;
+	font-size: 1em;
+	border: solid 1px #000;
+	background-color: rgba(255, 255, 255, 0.35);
+	width: 50px;
+	text_align: center;
+	padding: 3px;
+	margin: 3px;
+	color: #fff;
+	border-radius: 7px;
+}
+
+.countdown_amount {
+	font-size: 2em;
+}
+
+.countdown_descr {
+	clear: both;
+	color: #fff;
+	font-size: 1.5em;
+	text-align: center;
+	width: 250px;
+}
+/* end typo.css ================================================================ */

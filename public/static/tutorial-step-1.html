@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://aichallenge.org/ants_tutorial.php -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Ants Tutorial | AI Challenge</title>
+        <meta name="description" content="The AI Challenge (sponsored by Google) is an international programming contest started by the University of Waterloo Computer Science Club.">
+        <meta name="keywords" content="">
+
+        <!-- Global Tags -->
+
+        <link rel="shortcut icon" href="http://aichallenge.org/favicon.ico">
+
+        <!-- CSS -->
+        <link href="./common/aichallenge.css" rel="stylesheet" type="text/css">
+
+        <!-- JavaScript -->
+        <script type="text/javascript" async="" src="./ants_tutorial_files/ga.js"></script><script src="./ants_tutorial_files/jquery.min.js"></script>
+        <script src="./common/jquery.tablesorter.min.js"></script>
+        <script src="./common/jquery.countdown.min.js"></script>
+        <script src="./common/tab_sync.js"></script>
+    <link type="text/css" rel="stylesheet" href="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/style.css"><script type="text/javascript" charset="utf-8" src="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/page_context.js"></script><link rel="stylesheet" type="text/css" href="chrome-extension://cgndfbhngibokieehnjhbjkkhbfmhojo/css/validation.css"></head>
+    <body screen_capture_injected="true">
+        <div id="wrapper">
+            <div id="header" class="columns">
+                <div class="left">
+                    <h1>AI Challenge</h1>
+                    <h3>Sponsored by Google</h3>
+                </div>
+                <div class="right">
+                    <h2>Ants</h2>
+                    <h3>Fall 2011</h3>
+                    <div id="triangle"></div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="left">
+                    <div id="content">
+
+<!--<MarkdownReplacement with="competition-Tutorial-Step-1.md">--><style>img.latex-inline { vertical-align: middle; }</style>
+<h2 id="step-1-avoiding-collisions">Step 1: Avoiding collisions</h2>
+<div class="toc">
+
+<ul>
+<li><a href="./ants_tutorial.html">Setting Up</a></li>
+<li><a href="./tutorial-step-1.html">Step 1: Avoiding Collisions</a></li>
+<li><a href="./tutorial-step-2.html">Step 2: Gathering Food</a></li>
+<li><a href="./tutorial-step-3.html">Step 3: Not Blocking Hills</a></li>
+<li><a href="./tutorial-step-4.html">Step 4: Explore the Map</a></li>
+<li><a href="./tutorial-step-5.html">Step 5: Attack the Enemy Hills</a></li>
+</ul>
+</div>
+
+<h3 id="the_plan">The Plan</h3>
+<p>In order to prevent collisions, we will need to do a few things:</p>
+<ul>
+<li>prevent ants from moving onto other ants</li>
+<li>prevent 2 ants from moving to the same destination</li>
+<li>track information about where all our ants are going</li>
+</ul>
+<h3 id="the_implementation">The Implementation</h3>
+<div class="tab_sync" style="height: 175px; "><ul style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; "><li class="tab_button tab_selected">Python</li><li class="tab_button">Java</li></ul>
+<div class="tab_content" title="Python" style="height: 144px; ">
+
+<p>To track information about where ants are moving, we are going to use a dictionary.  It is a data structure that will store locations, and then allow us to check if a location has already been stored.  Each key of the dictionary will be a location we are moving to and each value will be the ant location that is moving to the new location.  A location will be a tuple of values consisting of the row and column of the map location.  We can then check the dictionary before making a move to ensure we don't move 2 ants to the same spot.  Every time we move an ant, we need to be sure to update the list.</p>
+<p>This check will come in handy later in the tutorial, so we will make a function to attempt moves and check to make sure the move is to an empty location.  It will return a boolean (true or false) to let us know if the move worked.</p>
+<p></p></div>
+<div class="tab_content" title="Java" style="height: 144px; display: none; "><p></p>
+<p>To track information about where ants are moving, we are going to use a HashMap.  It is a data structure that will store locations, and then allow us to check if a location has already been stored.  Each key and value of the HashMap will be a Tile object.  A Tile object is the row and column of a location on the map.  The key will be the new location to move to and the value will be the location of the ant moving to the new location.  We can then check the HashMap before making a move to ensure we don't move 2 ants to the same spot.  Every time we move an ant, we need to be sure to update the HashMap.</p>
+<p>This check will come in handy later in the tutorial, so we will make a function to attempt moves and check to make sure the move is to an empty location.  It will return a boolean (true or false) to let us know if the move worked.</p>
+<p></p></div>
+</div><p></p>
+<h3 id="the_code">The Code</h3>
+<p>We'll trim down the starter bots comments and put the new code in:</p>
+<div class="tab_sync" style="height: 851px; "><ul style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; "><li class="tab_button tab_selected">Python</li><li class="tab_button">Java</li></ul>
+<div class="tab_content" title="Python" style="height: 820px; ">
+
+<div class="codehilite"><pre>    <span class="k">def</span> <span class="nf">do_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ants</span><span class="p">):</span>
+        <span class="c"># track all moves, prevent collisions</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">def</span> <span class="nf">do_move_direction</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+            <span class="n">new_loc</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">destination</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">unoccupied</span><span class="p">(</span><span class="n">new_loc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new_loc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">):</span>
+                <span class="n">ants</span><span class="o">.</span><span class="n">issue_order</span><span class="p">((</span><span class="n">loc</span><span class="p">,</span> <span class="n">direction</span><span class="p">))</span>
+                <span class="n">orders</span><span class="p">[</span><span class="n">new_loc</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="c"># default move</span>
+        <span class="k">for</span> <span class="n">ant_loc</span> <span class="ow">in</span> <span class="n">ants</span><span class="o">.</span><span class="n">my_ants</span><span class="p">():</span>
+            <span class="n">directions</span> <span class="o">=</span> <span class="p">(</span><span class="s">'n'</span><span class="p">,</span><span class="s">'e'</span><span class="p">,</span><span class="s">'s'</span><span class="p">,</span><span class="s">'w'</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="n">directions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">do_move_direction</span><span class="p">(</span><span class="n">ant_loc</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+                    <span class="k">break</span>
+</pre></div>
+
+
+<p><em>(Note: Make sure you get the indentation correct.  In Python, indentation determines the code blocks or scope, so it has to be correct.)</em></p>
+<p>The <code>do_move_direction</code> takes an ant location (a tuple of (row, col) ) and a direction ( 'n', 'e', 's' or 'w' ) and tries to perform the move.  This function is located inside a class method (which is also a function) and is okay to do in python.  We are using some predefined functions from the starter bot to help us:</p>
+<ul>
+<li>
+<p><code>ants.destination</code> takes a location and a direction and returns the destination location for us.  It takes care of the map wrapping around so we don't have to worry about it.</p>
+</li>
+<li>
+<p><code>ants.unoccupied</code> takes a location and let's us know if we can move there.  This is better than the previous <code>ants.passable</code> because it will not allow us to step on food or other ants.</p>
+</li>
+</ul>
+<p>The <code>orders</code> dictionary is used to track what moves we have issued.  In the if statement we have <code>new_loc not in orders</code> which will check the dictionary keys for us and help prevent collisions.
+</p></div>
+<div class="tab_content" title="Java" style="height: 820px; display: none; "><p></p>
+<p>We'll trim down the starter bots comments and put the new code in:</p>
+<div class="codehilite"><pre>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">,</span> <span class="n">Tile</span><span class="o">&gt;</span> <span class="n">orders</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">,</span> <span class="n">Tile</span><span class="o">&gt;();</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">doMoveDirection</span><span class="o">(</span><span class="n">Tile</span> <span class="n">antLoc</span><span class="o">,</span> <span class="n">Aim</span> <span class="n">direction</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Ants</span> <span class="n">ants</span> <span class="o">=</span> <span class="n">getAnts</span><span class="o">();</span>
+        <span class="c1">// Track all moves, prevent collisions</span>
+        <span class="n">Tile</span> <span class="n">newLoc</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="na">getTile</span><span class="o">(</span><span class="n">antLoc</span><span class="o">,</span> <span class="n">direction</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ants</span><span class="o">.</span><span class="na">getIlk</span><span class="o">(</span><span class="n">newLoc</span><span class="o">).</span><span class="na">isUnoccupied</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">orders</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">newLoc</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">ants</span><span class="o">.</span><span class="na">issueOrder</span><span class="o">(</span><span class="n">antLoc</span><span class="o">,</span> <span class="n">direction</span><span class="o">);</span>
+            <span class="n">orders</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">newLoc</span><span class="o">,</span> <span class="n">antLoc</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doTurn</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Ants</span> <span class="n">ants</span> <span class="o">=</span> <span class="n">getAnts</span><span class="o">();</span>
+        <span class="n">orders</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+
+        <span class="c1">//  default move</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Tile</span> <span class="n">myAnt</span> <span class="o">:</span> <span class="n">ants</span><span class="o">.</span><span class="na">getMyAnts</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">Aim</span> <span class="n">direction</span> <span class="o">:</span> <span class="n">Aim</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">doMoveDirection</span><span class="o">(</span><span class="n">myAnt</span><span class="o">,</span> <span class="n">direction</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">break</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre></div>
+
+
+<p>The <code>doMoveDirection</code> function takes an ant location (a Tile object) and a direction (an Aim object of N, E, S or W) and tries to perform the move.  This function is located outside the <code>doTurn</code> function, so our reserved tiles HashMap is at the class level and we clear it for each turn.  We are using some predefined functions from the starter bot to help us:</p>
+<ul>
+<li>
+<p><code>ants.getTile(Tile, Aim)</code> takes a location (Tile object) and a direction (Aim object) and returns the destination location (Tile object) for us.  It takes care of the map wrapping around so we don't have to worry about it.</p>
+</li>
+<li>
+<p><code>ants.getIlk(Tile)</code> takes a location (Tile object) and returns the Ilk (a fancy word for type or kind).  We then call the <code>isUnoccupied()</code> function of the Ilk object to see if it is free to move to.</p>
+</li>
+<li>
+<p><code>Ilk.isUnoccupied</code> takes a location and let's us know if we can move there.  This is better than the previous <code>Ilk.isPassable</code> because it will not allow us to step on food or other ants.</p>
+</li>
+</ul>
+<p>The <code>orders</code> HashMap is used to track what moves we have issued.  In the if statement we have <code>!orders.containsKey(newLoc)</code> which will check the HashMap for us and help prevent collisions.
+</p></div>
+</div><p></p>
+<h3 id="the_results">The Results</h3>
+<p>Let's run the bot again and see how we do.</p>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">aichallenge</span><span class="o">&gt;</span><span class="n">tutorial</span><span class="o">.</span><span class="n">cmd</span>
+<span class="n">running</span> <span class="k">for</span> <span class="mi">60</span> <span class="n">turns</span>
+                  <span class="n">ant_count</span> <span class="n">c_turns</span> <span class="n">climb</span><span class="p">?</span> <span class="n">cutoff</span> <span class="n">food</span> <span class="n">r_turn</span> <span class="n">ranking_bots</span> <span class="n">s_alive</span> <span class="n">s_hills</span> <span class="n">score</span>  <span class="n">w_turn</span> <span class="n">winning</span>
+<span class="n">turn</span>    <span class="mi">0</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">18</span>    <span class="mi">0</span>        <span class="n">None</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">0</span>     <span class="n">None</span>
+<span class="n">turn</span>    <span class="mi">1</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">16</span>    <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">turn</span>    <span class="mi">2</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">16</span>    <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">turn</span>   <span class="mi">60</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">12</span>    <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">score</span> <span class="mi">1</span> <span class="mi">1</span>
+<span class="n">status</span> <span class="n">survived</span> <span class="n">survived</span>
+<span class="n">playerturns</span> <span class="mi">60</span> <span class="mi">60</span>
+</pre></div>
+
+
+<p>Here is the replay:</p>
+<div class="codehilite"><pre style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; background-image: none; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: initial; background-position: initial initial; background-repeat: initial initial; "><canvas style="display: inline; " width="600" height="600"></canvas><div style="display: none; ">Loading visualizer...<table style="display:table;width:100%"></table>Fetching replay from: <p style="display:inline;font-style:italic">example_games/tutorial.1.replay</p>...<br>Creating canvas...<br>Parsing the replay...<br></div></pre></div>
+
+
+<p>Better, but still not good.  One lone ant got out and got to fight with HunterBot.  We didn't suicide, and that's an improvement.  Plus, we created a helper function that will come in handy later.</p>
+<p>If your bot's ants oscillated behind their barrier instead, it is probably due to the ordering of the ants in your loop.  If the NW ant moves first it moves to the North of the SE ant, which can then only move East, South or West.  Otherwise if the SE ant moves first it moves to the East of the NW ant, which can then only move South or West.</p>
+<h3 id="next">Next</h3>
+<p>On to <a href="http://aichallenge.org/ants_tutorial_step_2.php">Step 2: Gathering Food</a></p>
+<!--</MarkdownReplacement>-->
+
+        <script type="text/javascript" src="./tutorial-step-1_files/visualizer-min.js"></script>
+<script>
+// function requires jQuery
+var visualize = function (i) {
+	var pre = $(this);
+    var data = pre.text();
+    var setup = data.split('\n')[0];
+    if (setup[0] === '#') {
+        try {
+            // option is a list of 4 or 5 values, [ options, width, height, config, uri ]
+            // if the uri is not there, the remaining data will be considered a map
+            // otherwise the uri is loaded
+            setup = $.parseJSON(setup.slice(1));
+        } catch (err) {
+            setup = [];
+        }
+    	// remove styles
+    	pre.css('border','none').css('background','none');
+        var width = setup[1] || 100;
+        var height = setup[2] || 100;
+        var config = setup[3] || {};
+        var uri = null;
+        if (setup.length === 5 && typeof setup[4] === 'string') {
+            uri = setup[4];
+        }
+        if (typeof java_codebase !== 'undefined') {
+            this.innerHTML = '';
+            var applet = document.createElement('applet');
+            var idx = java_codebase.indexOf('=');
+            var codeBaseAttribute = java_codebase.substring(0, idx);
+            var codeBaseValue = java_codebase.substring(idx + 2, java_codebase.length - 1);
+            applet.setAttribute(codeBaseAttribute, codeBaseValue);
+            applet.setAttribute('code', 'com.aicontest.visualizer.VisualizerApplet');
+            applet.setAttribute('width', width);
+            applet.setAttribute('height', height);
+            var addParam = function(name, value) {
+                var param = document.createElement('param');
+                param.setAttribute('name', name);
+                param.setAttribute('value', value);
+                applet.appendChild(param);
+            };
+        	for (var key in setup[0]) {
+	            addParam(key, setup[0][key]);
+        	}
+            if (uri) {
+                addParam('replay', uri);
+            } else {
+	            data = data.replace(/\n/g, '\\n');
+	            addParam('replay_string', data);
+            }
+            if (typeof java_debug !== 'undefined' && java_debug) {
+                addParam('debug', 'true');
+                addParam('separate_jvm', 'true');
+                addParam('classloader_cache', 'false');
+            }
+            addParam('configOverrides', JSON.stringify(config));
+            this.appendChild(applet);
+        } else if (typeof Visualizer !== 'undefined') {
+            // initialize options with defaults and override them
+            var options = new Options();
+            options.data_dir = 'visualizer/';
+            if (setup[0]) {
+            	for (key in setup[0]) {
+            		if (!options.hasOwnProperty(key) || (typeof options[key] === 'function')) {
+            			throw new Error("Cannot override '" + key + "', because it is not a known option.");
+            		}
+            		options[key] = setup[0][key];
+            	}
+            }
+            var vis = new Visualizer(this, options, width, height, config);
+            if (uri) {
+            	vis.loadReplayDataFromURI(uri);
+            } else {
+            	vis.loadReplayData(data);
+            }
+        }
+    }
+};
+</script>
+    <script>
+    $(function () {
+        $('pre').each(visualize);
+    });
+    </script>
+                    </div>
+                </div>
+                <div class="right">
+                    <div id="menu">
+    <h1><a href="http://aichallenge.org/index.php">Home</a></h1>
+    <h1>Contest Overview</h1>
+    <ul>
+      <li><a href="http://aichallenge.org/rankings.php">Current Rankings</a></li>
+      <li><a href="http://aichallenge.org/games.php">Latest Games</a></li>
+      <li><a href="http://aichallenge.org/maps.php">Official Maps</a></li>
+    </ul>
+    <h1>My Account</h1>
+        <ul>
+      <li><a href="http://aichallenge.org/login.php">Sign In</a></li>
+      <li><a href="http://aichallenge.org/register.php">Sign Up</a></li>
+    </ul>
+        <h1>Getting Started</h1>
+    <ul>
+      <li class="highlight"><a href="http://aichallenge.org/quickstart.php">Five Minute Quickstart Guide</a></li>
+      <li><a href="http://aichallenge.org/ants_tutorial.php">Ants Tutorial</a></li>
+      <li><a href="http://aichallenge.org/rules.php">Contest Rules</a></li>
+      <li><a href="http://aichallenge.org/using_the_tools.php">Using the Tools</a></li>
+      <li><a href="http://aichallenge.org/faq.php">Frequently Asked Questions</a></li>
+    </ul>
+    <h1>Ants</h1>
+    <ul>
+      <li class="highlight"><a href="http://aichallenge.org/starter_packages.php">Starter Packages</a></li>
+      <li><a href="http://aichallenge.org/problem_description.php">Problem Description</a></li>
+      <li><a href="http://aichallenge.org/specification.php">Game Specification</a></li>
+      <li><a href="http://aichallenge.org/game_settings.php">Game Settings</a></li>
+      <li><a href="http://aichallenge.org/strategy_guide.php">Strategy Guide</a></li>
+      <li><a href="http://paste.aichallenge.org/">Share Maps &amp; Replays</a></li>
+    </ul>
+    <h1>Community</h1>
+    <ul>
+      <li><a href="http://forums.aichallenge.org/">Forums</a></li>
+      <li><a href="irc://irc.freenode.org/aichallenge">IRC</a> <a href="http://webchat.freenode.net/?channels=aichallenge&uio=d4">(webclient)</a></li>
+      <li><a href="http://github.com/aichallenge/aichallenge">Github Repository</a></li>
+    </ul>
+    <h1>Past Contests</h1>
+    <ul>
+      <li><a href="http://tron.aichallenge.org/">Tron (Winter 2010)</a></li>
+      <li><a href="http://planetwars.aichallenge.org/">Planet Wars (Fall 2010)</a></li>
+    </ul>
+    <h1>User Search:</h1>
+    <form name="user_search_form" method="get" action="http://aichallenge.org/find_user.php">
+        <input name="username" type="text" style="width: 10em">
+        <input type="submit" name="search" value="Go">
+    </form>
+</div>
+                    <div id="sponsor_bar">
+                        <p>Thanks to additional server sponsor</p>
+                        <a href="http://www.tiw.nl/">
+                            <img src="./tutorial-step-1_files/totaalnet.png" alt="Totaalnet">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="left">
+                    <div id="footer">
+                        <a href="http://aichallenge.org/server_stats.php">Server Statistics</a> |
+                        <a href="http://aichallenge.org/credits.php">Credits</a> |
+                        <a href="http://aichallenge.org/rules.php">Rules</a>
+                    <div class="small right fade">
+Page rendered in 1 milliseconds                    </div>
+                    </div>
+                </div>
+                <div class="right">
+                </div>
+            </div>
+        </div>
+
+
+<div id="html-validator-loading"><img src="chrome-extension://cgndfbhngibokieehnjhbjkkhbfmhojo/images/loading.gif">Validating...</div><div id="html-validator-message"><span id="html-validation-message-close">X</span><div id="html-validator-message-content"></div></div></body><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style><link rel="stylesheet" type="text/css" href="data:text/css,"></html>

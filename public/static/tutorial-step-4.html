@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://aichallenge.org/ants_tutorial.php -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Ants Tutorial | AI Challenge</title>
+        <meta name="description" content="The AI Challenge (sponsored by Google) is an international programming contest started by the University of Waterloo Computer Science Club.">
+        <meta name="keywords" content="">
+
+        <!-- Global Tags -->
+
+        <link rel="shortcut icon" href="http://aichallenge.org/favicon.ico">
+
+        <!-- CSS -->
+        <link href="./common/aichallenge.css" rel="stylesheet" type="text/css">
+
+        <!-- JavaScript -->
+        <script type="text/javascript" async="" src="./ants_tutorial_files/ga.js"></script><script src="./ants_tutorial_files/jquery.min.js"></script>
+        <script src="./common/jquery.tablesorter.min.js"></script>
+        <script src="./common/jquery.countdown.min.js"></script>
+        <script src="./common/tab_sync.js"></script>
+    <link type="text/css" rel="stylesheet" href="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/style.css"><script type="text/javascript" charset="utf-8" src="chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/page_context.js"></script><link rel="stylesheet" type="text/css" href="chrome-extension://cgndfbhngibokieehnjhbjkkhbfmhojo/css/validation.css"></head>
+    <body screen_capture_injected="true">
+        <div id="wrapper">
+            <div id="header" class="columns">
+                <div class="left">
+                    <h1>AI Challenge</h1>
+                    <h3>Sponsored by Google</h3>
+                </div>
+                <div class="right">
+                    <h2>Ants</h2>
+                    <h3>Fall 2011</h3>
+                    <div id="triangle"></div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="left">
+                    <div id="content">
+
+<!--<MarkdownReplacement with="competition-Tutorial-Step-4.md">--><style>img.latex-inline { vertical-align: middle; }</style>
+<h2 id="step-4-exploring-the-map">Step 4: Exploring the Map</h2>
+<div class="toc">
+
+<ul>
+<li><a href="./ants_tutorial.html">Setting Up</a></li>
+<li><a href="./tutorial-step-1.html">Step 1: Avoiding Collisions</a></li>
+<li><a href="./tutorial-step-2.html">Step 2: Gathering Food</a></li>
+<li><a href="./tutorial-step-3.html">Step 3: Not Blocking Hills</a></li>
+<li><a href="./tutorial-step-4.html">Step 4: Explore the Map</a></li>
+<li><a href="./tutorial-step-5.html">Step 5: Attack the Enemy Hills</a></li>
+</ul>
+</div>
+
+<h3 id="the_plan">The Plan</h3>
+<p>If ants can't see any food, they just sit there doing nothing.  HunterBot does this too.  We need a way to get our ants to look for more food.  If we can track all of the locations we haven't seen yet, then we can send free ants to go scout that location.  If they find more food, then the food gathering code should kick in.</p>
+<h3 id="the_implementation">The Implementation</h3>
+<p>To track information about what hasn't been seen, we are going to create a class level variable.  This will be a list of every location on the map.  Each turn, if we can see the location, then we will remove it from the list.  We can then start sending free ants to the location left in the list.  Once the entire map is explored, the list will be empty and this section of code will be ignored.  Food is more important to get right away, so we'll do this as a second priority.</p>
+<h3 id="the_code">The Code</h3>
+<div class="tab_sync" style="height: 1147px; "><ul style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; "><li class="tab_button tab_selected">Python</li><li class="tab_button">Java</li></ul>
+<div class="tab_content" title="Python" style="height: 1116px; ">
+
+<p>Put this code in the <code>do_setup</code> method of the bot.  You should replace the <code>pass</code> statement.  This code will only be run once after our bot learns the size of the map.<br>
+</p>
+<div class="codehilite"><pre>    <span class="bp">self</span><span class="o">.</span><span class="n">unseen</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">rows</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">cols</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unseen</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Notice we are using <code>self.unseen</code>; <code>self</code> is a reference to our bot class and we will need to use it to reference our unseen list in the <code>do_turn</code> method.  We create a list with a nested loop for every combination of row and column values.  <em>(Note: this could be a large list and not very memory efficient.  This is just the easiest way to make the code look nice.  You'll probably want to try and use a different technique for a real bot.)</em></p>
+<p>Add the following code after the gather food section and before the unblocking hill section:</p>
+<div class="codehilite"><pre>    <span class="c"># explore unseen areas</span>
+    <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unseen</span><span class="p">[:]:</span>
+        <span class="k">if</span> <span class="n">ants</span><span class="o">.</span><span class="n">visible</span><span class="p">(</span><span class="n">loc</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unseen</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ant_loc</span> <span class="ow">in</span> <span class="n">ants</span><span class="o">.</span><span class="n">my_ants</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">ant_loc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">unseen_dist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">unseen_loc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unseen</span><span class="p">:</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">ant_loc</span><span class="p">,</span> <span class="n">unseen_loc</span><span class="p">)</span>
+                <span class="n">unseen_dist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">dist</span><span class="p">,</span> <span class="n">unseen_loc</span><span class="p">))</span>
+            <span class="n">unseen_dist</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">dist</span><span class="p">,</span> <span class="n">unseen_loc</span> <span class="ow">in</span> <span class="n">unseen_dist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">do_move_location</span><span class="p">(</span><span class="n">ant_loc</span><span class="p">,</span> <span class="n">unseen_loc</span><span class="p">):</span>
+                    <span class="k">break</span>
+</pre></div>
+
+
+<p>First we trim the list of unseen squares by looping through every one and checking if we can see it.  We use yet another starter bot helper function:</p>
+<ul>
+<li><code>ants.visible</code> takes a location and returns a <code>True</code> if it is in the view radius of any ant.  This function is written to be fairly efficient so that calling it multiple times won't cause a big slowdown.  (It can still be improved.)  You shouldn't try and modify a list while you are looping through it, so we use the list copy shortcut <code>[:]</code> in the for loop to make sure the list we are looping through is different than the list we are removing locations from.</li>
+</ul>
+<p>Next we loop through all the ants and make sure they haven't been given an order yet.  If not, we then create a list of all the squares we haven't seen yet and order them by distance.  This is the same technique we used for the gather food code.  We then go through the list and find the first unseen square that we can start moving toward.  <em>(Note: at the beginning of a game on a large map, checking the distance to every unseen square is probably very slow.  This could be done better.)</em></p>
+<p></p></div>
+<div class="tab_content" title="Java" style="height: 1116px; display: none; "><p></p>
+<p>Add the <code>unseenTiles</code> Set under the order declaration:</p>
+<div class="codehilite"><pre>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">,</span> <span class="n">Tile</span><span class="o">&gt;</span> <span class="n">orders</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">,</span> <span class="n">Tile</span><span class="o">&gt;();</span>
+
+    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">&gt;</span> <span class="n">unseenTiles</span><span class="o">;</span>
+</pre></div>
+
+
+<p>The unseenTiles will be a set of all tiles we have not seen during the game.  <em>(Note: this could be a large list and not very memory efficient.  This is just the easiest way to make the code look nice.  You'll probably want to try and use a different technique for a real bot.)</em></p>
+<p>Next, add the following code near the top of the <code>doTurn</code> function, just below the foodTargets declaration:</p>
+<div class="codehilite"><pre>        <span class="c1">// add all locations to unseen tiles set, run once</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">unseenTiles</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">unseenTiles</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">&gt;();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">ants</span><span class="o">.</span><span class="na">getRows</span><span class="o">();</span> <span class="n">row</span><span class="o">++)</span> <span class="o">{</span>
+                <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">ants</span><span class="o">.</span><span class="na">getCols</span><span class="o">();</span> <span class="n">col</span><span class="o">++)</span> <span class="o">{</span>
+                    <span class="n">unseenTiles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Tile</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">col</span><span class="o">));</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// remove any tiles that can be seen, run each turn</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Tile</span><span class="o">&gt;</span> <span class="n">locIter</span> <span class="o">=</span> <span class="n">unseenTiles</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> <span class="n">locIter</span><span class="o">.</span><span class="na">hasNext</span><span class="o">();</span> <span class="o">)</span> <span class="o">{</span>
+            <span class="n">Tile</span> <span class="n">next</span> <span class="o">=</span> <span class="n">locIter</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">ants</span><span class="o">.</span><span class="na">isVisible</span><span class="o">(</span><span class="n">next</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">locIter</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</pre></div>
+
+
+<p>The first part initializes the list to every Tile in the game.  It will only run during the first turn.  You shouldn't try and modify a collection while you are looping through it, so we use an iterator object, which allows for safe removal of Tiles while we loop through the list and check the visibility.</p>
+<p>Last, add this code section between finding close food and unblocking your own hills:</p>
+<div class="codehilite"><pre>        <span class="c1">// explore unseen areas</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Tile</span> <span class="n">antLoc</span> <span class="o">:</span> <span class="n">sortedAnts</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">orders</span><span class="o">.</span><span class="na">containsValue</span><span class="o">(</span><span class="n">antLoc</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">List</span><span class="o">&lt;</span><span class="n">Route</span><span class="o">&gt;</span> <span class="n">unseenRoutes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Route</span><span class="o">&gt;();</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">Tile</span> <span class="n">unseenLoc</span> <span class="o">:</span> <span class="n">unseenTiles</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="kt">int</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="na">getDistance</span><span class="o">(</span><span class="n">antLoc</span><span class="o">,</span> <span class="n">unseenLoc</span><span class="o">);</span>
+                    <span class="n">Route</span> <span class="n">route</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Route</span><span class="o">(</span><span class="n">antLoc</span><span class="o">,</span> <span class="n">unseenLoc</span><span class="o">,</span> <span class="n">distance</span><span class="o">);</span>
+                    <span class="n">unseenRoutes</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">route</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">unseenRoutes</span><span class="o">);</span>
+                <span class="k">for</span> <span class="o">(</span><span class="n">Route</span> <span class="n">route</span> <span class="o">:</span> <span class="n">unseenRoutes</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">doMoveLocation</span><span class="o">(</span><span class="n">route</span><span class="o">.</span><span class="na">getStart</span><span class="o">(),</span> <span class="n">route</span><span class="o">.</span><span class="na">getEnd</span><span class="o">()))</span> <span class="o">{</span>
+                        <span class="k">break</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+</pre></div>
+
+
+<p>Here, for every ant that doesn't have an order yet (we are checking the orders HashMap using the <code>containsValue()</code> method), we calculate the distance to every other unseen location.  Then we sort the ArrayList so the shortest distances are first.  We are using another help function from the starter bot.</p>
+<ul>
+<li><code>ants.isVisible(Tile)</code> takes a location and returns a <code>true</code> if it is in the view radius of any ant.  This function is written to be fairly efficient so that calling it multiple times won't cause a big slowdown.  (It can still be improved.)</li>
+</ul>
+<p>This is the same technique we used for the gather food code.  We then go through the list and find the first and closest unseen square that we can start moving toward.  <em>(Note: at the beginning of a game on a large map, checking the distance to every unseen square is probably very slow.  This could be done better.)</em></p>
+<p></p></div>
+</div><p></p>
+<h3 id="the_results">The Results</h3>
+<p>Let's run the bot again and see how we do.</p>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">aichallenge</span><span class="o">&gt;</span><span class="n">tutorial</span><span class="o">.</span><span class="n">cmd</span>
+<span class="n">running</span> <span class="k">for</span> <span class="mi">60</span> <span class="n">turns</span>
+                  <span class="n">ant_count</span> <span class="n">c_turns</span> <span class="n">climb</span><span class="p">?</span> <span class="n">cutoff</span> <span class="n">food</span> <span class="n">r_turn</span> <span class="n">ranking_bots</span> <span class="n">s_alive</span> <span class="n">s_hills</span> <span class="n">score</span>  <span class="n">w_turn</span> <span class="n">winning</span>
+<span class="n">turn</span>    <span class="mi">0</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">18</span>    <span class="mi">0</span>        <span class="n">None</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">0</span>     <span class="n">None</span>
+<span class="n">turn</span>    <span class="mi">1</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">16</span>    <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">turn</span>    <span class="mi">2</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">16</span>    <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">...</span>
+<span class="n">turn</span>   <span class="mi">60</span> <span class="n">stats:</span>   <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">0</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>    <span class="o">-</span>     <span class="mi">0</span>     <span class="mi">1</span>       <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="mi">1</span>     <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">score</span> <span class="mi">1</span> <span class="mi">1</span>
+<span class="n">status</span> <span class="n">survived</span> <span class="n">survived</span>
+<span class="n">playerturns</span> <span class="mi">60</span> <span class="mi">60</span>
+</pre></div>
+
+
+<p>Here is the replay:</p>
+<div class="codehilite"><pre style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; background-image: none; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: initial; background-position: initial initial; background-repeat: initial initial; "><div style="display: block; ">Loading visualizer...<table style="display:table;width:100%"></table>Fetching replay from: <p style="display:inline;font-style:italic">example_games/tutorial.4.replay</p>...<br>Creating canvas...<br><font style="color:red">Status 0: </font><br></div></pre></div>
+
+
+<p>Look at that, we got all the food!  Our ants are now roaming around the map so that they can see everything.  Unfortunately we haven't taken out the enemy hill yet, so let's work on that next.</p>
+<h3 id="next">Next</h3>
+<p>On to <a href="http://aichallenge.org/ants_tutorial_step_5.php">Step 5: Attacking Enemy Hills</a></p>
+<!--</MarkdownReplacement>-->
+
+        <script type="text/javascript" src="./tutorial-step-4_files/visualizer-min.js"></script>
+<script>
+// function requires jQuery
+var visualize = function (i) {
+	var pre = $(this);
+    var data = pre.text();
+    var setup = data.split('\n')[0];
+    if (setup[0] === '#') {
+        try {
+            // option is a list of 4 or 5 values, [ options, width, height, config, uri ]
+            // if the uri is not there, the remaining data will be considered a map
+            // otherwise the uri is loaded
+            setup = $.parseJSON(setup.slice(1));
+        } catch (err) {
+            setup = [];
+        }
+    	// remove styles
+    	pre.css('border','none').css('background','none');
+        var width = setup[1] || 100;
+        var height = setup[2] || 100;
+        var config = setup[3] || {};
+        var uri = null;
+        if (setup.length === 5 && typeof setup[4] === 'string') {
+            uri = setup[4];
+        }
+        if (typeof java_codebase !== 'undefined') {
+            this.innerHTML = '';
+            var applet = document.createElement('applet');
+            var idx = java_codebase.indexOf('=');
+            var codeBaseAttribute = java_codebase.substring(0, idx);
+            var codeBaseValue = java_codebase.substring(idx + 2, java_codebase.length - 1);
+            applet.setAttribute(codeBaseAttribute, codeBaseValue);
+            applet.setAttribute('code', 'com.aicontest.visualizer.VisualizerApplet');
+            applet.setAttribute('width', width);
+            applet.setAttribute('height', height);
+            var addParam = function(name, value) {
+                var param = document.createElement('param');
+                param.setAttribute('name', name);
+                param.setAttribute('value', value);
+                applet.appendChild(param);
+            };
+        	for (var key in setup[0]) {
+	            addParam(key, setup[0][key]);
+        	}
+            if (uri) {
+                addParam('replay', uri);
+            } else {
+	            data = data.replace(/\n/g, '\\n');
+	            addParam('replay_string', data);
+            }
+            if (typeof java_debug !== 'undefined' && java_debug) {
+                addParam('debug', 'true');
+                addParam('separate_jvm', 'true');
+                addParam('classloader_cache', 'false');
+            }
+            addParam('configOverrides', JSON.stringify(config));
+            this.appendChild(applet);
+        } else if (typeof Visualizer !== 'undefined') {
+            // initialize options with defaults and override them
+            var options = new Options();
+            options.data_dir = 'visualizer/';
+            if (setup[0]) {
+            	for (key in setup[0]) {
+            		if (!options.hasOwnProperty(key) || (typeof options[key] === 'function')) {
+            			throw new Error("Cannot override '" + key + "', because it is not a known option.");
+            		}
+            		options[key] = setup[0][key];
+            	}
+            }
+            var vis = new Visualizer(this, options, width, height, config);
+            if (uri) {
+            	vis.loadReplayDataFromURI(uri);
+            } else {
+            	vis.loadReplayData(data);
+            }
+        }
+    }
+};
+</script>
+    <script>
+    $(function () {
+        $('pre').each(visualize);
+    });
+    </script>
+                    </div>
+                </div>
+                <div class="right">
+                    <div id="menu">
+    <h1><a href="http://aichallenge.org/index.php">Home</a></h1>
+    <h1>Contest Overview</h1>
+    <ul>
+      <li><a href="http://aichallenge.org/rankings.php">Current Rankings</a></li>
+      <li><a href="http://aichallenge.org/games.php">Latest Games</a></li>
+      <li><a href="http://aichallenge.org/maps.php">Official Maps</a></li>
+    </ul>
+    <h1>My Account</h1>
+        <ul>
+      <li><a href="http://aichallenge.org/login.php">Sign In</a></li>
+      <li><a href="http://aichallenge.org/register.php">Sign Up</a></li>
+    </ul>
+        <h1>Getting Started</h1>
+    <ul>
+      <li class="highlight"><a href="http://aichallenge.org/quickstart.php">Five Minute Quickstart Guide</a></li>
+      <li><a href="http://aichallenge.org/ants_tutorial.php">Ants Tutorial</a></li>
+      <li><a href="http://aichallenge.org/rules.php">Contest Rules</a></li>
+      <li><a href="http://aichallenge.org/using_the_tools.php">Using the Tools</a></li>
+      <li><a href="http://aichallenge.org/faq.php">Frequently Asked Questions</a></li>
+    </ul>
+    <h1>Ants</h1>
+    <ul>
+      <li class="highlight"><a href="http://aichallenge.org/starter_packages.php">Starter Packages</a></li>
+      <li><a href="http://aichallenge.org/problem_description.php">Problem Description</a></li>
+      <li><a href="http://aichallenge.org/specification.php">Game Specification</a></li>
+      <li><a href="http://aichallenge.org/game_settings.php">Game Settings</a></li>
+      <li><a href="http://aichallenge.org/strategy_guide.php">Strategy Guide</a></li>
+      <li><a href="http://paste.aichallenge.org/">Share Maps &amp; Replays</a></li>
+    </ul>
+    <h1>Community</h1>
+    <ul>
+      <li><a href="http://forums.aichallenge.org/">Forums</a></li>
+      <li><a href="irc://irc.freenode.org/aichallenge">IRC</a> <a href="http://webchat.freenode.net/?channels=aichallenge&uio=d4">(webclient)</a></li>
+      <li><a href="http://github.com/aichallenge/aichallenge">Github Repository</a></li>
+    </ul>
+    <h1>Past Contests</h1>
+    <ul>
+      <li><a href="http://tron.aichallenge.org/">Tron (Winter 2010)</a></li>
+      <li><a href="http://planetwars.aichallenge.org/">Planet Wars (Fall 2010)</a></li>
+    </ul>
+    <h1>User Search:</h1>
+    <form name="user_search_form" method="get" action="http://aichallenge.org/find_user.php">
+        <input name="username" type="text" style="width: 10em">
+        <input type="submit" name="search" value="Go">
+    </form>
+</div>
+                    <div id="sponsor_bar">
+                        <p>Thanks to additional server sponsor</p>
+                        <a href="http://www.tiw.nl/">
+                            <img src="./tutorial-step-4_files/totaalnet.png" alt="Totaalnet">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="left">
+                    <div id="footer">
+                        <a href="http://aichallenge.org/server_stats.php">Server Statistics</a> |
+                        <a href="http://aichallenge.org/credits.php">Credits</a> |
+                        <a href="http://aichallenge.org/rules.php">Rules</a>
+                    <div class="small right fade">
+Page rendered in 2 milliseconds                    </div>
+                    </div>
+                </div>
+                <div class="right">
+                </div>
+            </div>
+        </div>
+
+
+<div id="html-validator-loading"><img src="chrome-extension://cgndfbhngibokieehnjhbjkkhbfmhojo/images/loading.gif">Validating...</div><div id="html-validator-message"><span id="html-validation-message-close">X</span><div id="html-validator-message-content"></div></div></body><style type="text/css">embed[type*="application/x-shockwave-flash"],embed[src*=".swf"],object[type*="application/x-shockwave-flash"],object[codetype*="application/x-shockwave-flash"],object[src*=".swf"],object[codebase*="swflash.cab"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"],object[classid*="d27cdb6e-ae6d-11cf-96b8-444553540000"],object[classid*="D27CDB6E-AE6D-11cf-96B8-444553540000"]{	display: none !important;}</style><link rel="stylesheet" type="text/css" href="data:text/css,"></html>
