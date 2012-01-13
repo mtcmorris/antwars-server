@@ -3,7 +3,7 @@ class Battle
 
   def self.fight!(bots)
 
-    play_game_command = 'cd ' + Rails.root.to_s + '/aitools; ./playgame.py --player_seed 42 --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 1000 --secure_jail --map_file maps/maze/maze_02p_02.map "$@" '
+    play_game_command = 'cd ' + Rails.root.to_s + '/aitools; ./playgame.py --player_seed 42 --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 1000 --map_file maps/maze/maze_02p_02.map "$@" '
 
 
     bot_paths = []
