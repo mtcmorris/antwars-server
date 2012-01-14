@@ -16,7 +16,7 @@ class BotsController < ApplicationController
 
     if @bot.save
       # Deactivate old bots
-      Bot.where(player_name: @bot.player_name).where("id NOT ?", @bot.id).all.map{|b| b.update_attribute :status, "inactive" }
+      Bot.where(player_name: @bot.player_name).where("id < ?", @bot.id).all.map{|b| b.update_attribute :status, "inactive" }
       redirect_to @bot, notice: 'Bot was successfully created.'
     else
       render action: "new"
