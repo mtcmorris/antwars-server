@@ -45,7 +45,7 @@ class Battle
     list_of_files = Dir["#{source_path}/**/**"]
     result = ""
     list_of_files.each do |file|
-      if File.basename(file) == "MyBot.rb"
+      if File.basename(file) == "bot.rb"
         result = file
       end
     end
