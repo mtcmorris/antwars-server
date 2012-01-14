@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120112235736) do
+ActiveRecord::Schema.define(:version => 20120114010908) do
 
   create_table "bots", :force => true do |t|
     t.string   "player_name"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(:version => 20120112235736) do
     t.string   "source_content_type"
     t.integer  "source_file_size"
     t.datetime "source_updated_at"
+    t.string   "status",              :default => "active"
   end
 
   create_table "matches", :force => true do |t|

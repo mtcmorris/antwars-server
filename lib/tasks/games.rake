@@ -4,12 +4,12 @@ namespace :games do
 
 
       # round = Time.now.to_s
-      if Bot.count <= 1
+      if Bot.active.count <= 1
         puts "There needs to be two uploaded bots to fight"
         exit
       end
 
-      bot_1, bot_2 = *Bot.all.sample(2)
+      bot_1, bot_2 = *Bot.active.all.sample(2)
       match = Match.create(bot_one: bot_1, bot_two: bot_2)
 
       match.run!
