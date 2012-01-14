@@ -12,7 +12,7 @@ class Battle
       bot_paths << (clean_and_setup_temp_path slugorize(bot.player_name), bot.source.to_file.path)
     end
 
-    bot_paths.map!{|p| '"ruby -T2 '+ p + '"'}
+    bot_paths.map!{|p| '"ruby '+ p + '"'}
 
     play_game_command += bot_paths.join(" ")
 
