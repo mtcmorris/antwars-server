@@ -12,8 +12,16 @@ class Match < ActiveRecord::Base
     result = Battle.fight!(bots)
     json_data = JSON.parse(result)
     json_data["playernames"] = bots.map{|b| b.player_name }
-    winner = bots.sort{|a, b| json_data["rank"][bots.index(a)] <=> json_data["rank"][bots.index(b)] }.first
-    update_attributes replay: json_data.to_json, status: "finished", winner_id: winner.id
+    if json_data["rank"].uniq.length == 1
+      # Draw
+      winner = nil
+      bots.first.drew_against!(bots.last)
+    else
+      winner = bots.sort{|a, b| json_data["rank"][bots.index(a)] <=> json_data["rank"][bots.index(b)] }.first
+      winner.won_against!(bots.detect{|b| b != winner})
+    end
+
+    update_attributes replay: json_data.to_json, status: "finished", winner_id: winner.try(:id)
   rescue Exception => e
     puts e.to_s
     update_attributes status: "failed", replay: e.to_s

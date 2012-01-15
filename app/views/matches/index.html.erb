@@ -25,6 +25,8 @@
         <td>
           <% if match.winner %>
             <%= match.winner.player_name %> (<%= match.winner.bot_name %>)
+          <% else %>
+            Draw
           <% end %>
         </td>
         <td><%= time_ago_in_words match.updated_at %> ago</td>
@@ -35,7 +37,24 @@
 
   <div class="span-one-third">
     <h1>Leaderboard</h1>
-    <p class="label">Coming soon</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ELO</th>
+          <th>Player (Bot)</th>
+          <th>Win/Loss/Draw</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% Bot.active.order("score DESC").all.each do |bot|%>
+          <tr>
+            <td><%= bot.score.to_i %></td>
+            <td><%= bot.player_name %> (<%= bot.bot_name %>)</td>
+            <td><%= bot.wins %>/<%= bot.losses %>/<%= bot.draws %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
     <%= link_to "Get in the game", new_bot_path, class: "btn primary" %>
   </div>
 </div>
