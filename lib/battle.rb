@@ -141,7 +141,7 @@ class Battle
 
   def self.fight!(bots)
 
-    play_game_command = 'cd ' + Rails.root.to_s + '/aitools; ./playgame.py --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 1000 --map_file ' + self.random_map + ' "$@" '
+    play_game_command = 'cd ' + Rails.root.to_s + '/aitools; ./playgame.py --end_wait=0.25 --nolaunch --log_stdout --log_dir game_logs --turns 500 --map_file ' + self.random_map + ' "$@" '
 
 
     bot_paths = []
@@ -151,6 +151,7 @@ class Battle
       if path.present?
         bot_paths << (clean_and_setup_temp_path slugorize(bot.player_name), bot.source.to_file.path)
       else
+        bot.update_attribute :status, "invalid"
         raise "Bot #{bot.player_name} did not have a valid path"
       end
     end
