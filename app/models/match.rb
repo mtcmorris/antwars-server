@@ -2,7 +2,7 @@ class Match < ActiveRecord::Base
 
   belongs_to :bot_one, :class_name => "Bot", foreign_key: :bot_1_id
   belongs_to :bot_two, class_name: "Bot", foreign_key: :bot_2_id
-  belongs_to :winner, :class_name => "Bot", :foreign_key => "winner"
+  belongs_to :winner, :class_name => "Bot", :foreign_key => :winner_id
 
   validates_presence_of :bot_1_id
   validates_presence_of :bot_2_id
@@ -12,7 +12,11 @@ class Match < ActiveRecord::Base
     result = Battle.fight!(bots)
     json_data = JSON.parse(result)
     json_data["playernames"] = bots.map{|b| b.player_name }
-    update_attributes replay: json_data.to_json, status: "finished"
+    winner = bots.sort{|a, b| json_data["rank"][bots.index(a)] <=> json_data["rank"][bots.index(b)] }.first
+    update_attributes replay: json_data.to_json, status: "finished", winner_id: winner.id
+  rescue Exception => e
+    puts e.to_s
+    update_attributes status: "failed", replay: e.to_s
   end
 
   def bots

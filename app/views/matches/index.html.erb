@@ -16,14 +16,18 @@
       <tr>
         <th>Players</th>
         <th>Winner</th>
-        <th>Replay</th>
+        <th>When</th>
       </tr>
 
     <% @matches.each do |match| %>
       <tr>
-        <td><%= match.bot_names %></td>
-        <td><em>Coming soon</em></td>
-        <td><%= link_to 'Show', match %></td>
+        <td><%= link_to match.bot_names, match %></td>
+        <td>
+          <% if match.winner %>
+            <%= match.winner.player_name %> (<%= match.winner.bot_name %>)
+          <% end %>
+        </td>
+        <td><%= time_ago_in_words match.updated_at %> ago</td>
       </tr>
     <% end %>
     </table>
