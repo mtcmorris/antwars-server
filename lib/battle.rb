@@ -188,7 +188,9 @@ class Battle
     list_of_files = Dir["#{source_path}/**/**"]
     result = ""
     list_of_files.each do |file|
-      if File.basename(file) == "bot"
+      if (File.basename(file) == "MyBot.rb" && (file.to_s == source_path.to_s + "/" + File.basename(file))) ||
+        (File.basename(file) == "bot.rb" && (file.to_s == source_path.to_s + "/" + File.basename(file))) ||
+        (File.basename(file) == "bot")
         result = file
       end
     end
