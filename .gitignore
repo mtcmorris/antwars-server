@@ -13,3 +13,8 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore bots & uploaded sources & replays
+aitools/bots/
+public/system/sources
+aitools/game_logs/*
